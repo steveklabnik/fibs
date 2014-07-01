@@ -8,3 +8,7 @@ authors = [ "brianloveswords@gmail.com" ]
 
 name = "fibs1"
 
+[[bin]]
+
+name = "fibs2"
+
