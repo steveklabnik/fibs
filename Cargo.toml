@@ -12,3 +12,6 @@ name = "fibs1"
 
 name = "fibs2"
 
+[[bin]]
+
+name = "fibs3"
