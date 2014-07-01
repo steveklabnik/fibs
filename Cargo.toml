@@ -1,0 +1,10 @@
+[package]
+
+name = "fibs"
+version = "0.1.0"
+authors = [ "brianloveswords@gmail.com" ]
+
+[[bin]]
+
+name = "fibs1"
+
