@@ -1,3 +1,6 @@
+extern crate test;
+use self::test::Bencher;
+
 struct FibIter {
 previous: int,
               current: int
@@ -22,4 +25,14 @@ fn main() {
         .filter(|&i| i % 2 == 0)
         .fold(0, |acc, i| acc + i);
     println!("sum = {}", sum);
+}
+
+#[bench]
+fn bench_fib_of_40000000(b: &mut Bencher) {
+    b.iter(|| {
+      let sum = fib_iter()
+          .take_while(|&i| i < 4000000)
+          .filter(|&i| i % 2 == 0)
+          .fold(0, |acc, i| acc + i);
+    });
 }
