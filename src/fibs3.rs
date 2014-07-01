@@ -1,6 +1,3 @@
-extern crate test;
-use self::test::Bencher;
-
 struct FibIter {
 previous: int,
               current: int
@@ -19,6 +16,8 @@ impl Iterator<int> for FibIter {
     }
 }
 
+/// uuuuuuuuugh https://github.com/rust-lang/rust/issues/12327
+#[cfg(not(test))]
 fn main() {
     let sum = fib_iter()
         .take_while(|&i| i < 4000000)
@@ -27,12 +26,21 @@ fn main() {
     println!("sum = {}", sum);
 }
 
-#[bench]
-fn bench_fib_of_40000000(b: &mut Bencher) {
-    b.iter(|| {
-      let sum = fib_iter()
-          .take_while(|&i| i < 4000000)
-          .filter(|&i| i % 2 == 0)
-          .fold(0, |acc, i| acc + i);
-    });
+#[cfg(test)]
+mod test {
+
+    extern crate test;
+    use self::test::Bencher;
+
+    use super::fib_iter;
+
+    #[bench]
+    fn bench_fib_of_40000000(b: &mut Bencher) {
+        b.iter(|| {
+          let sum = fib_iter()
+              .take_while(|&i| i < 4000000)
+              .filter(|&i| i % 2 == 0)
+              .fold(0, |acc, i| acc + i);
+        });
+    }
 }

@@ -1,6 +1,3 @@
-extern crate test;
-use self::test::Bencher;
-
 fn fib(pred: |x: int| -> bool) {
     let mut previous = 1;
     let mut current = 1;
@@ -12,6 +9,8 @@ fn fib(pred: |x: int| -> bool) {
     }
 }
 
+/// uuuuuuuuugh https://github.com/rust-lang/rust/issues/12327
+#[cfg(not(test))]
 fn main() {
     let mut sum = 0;
     fib(|i| -> bool {
@@ -32,24 +31,33 @@ fn main() {
     println!("sum = {}", sum)
 }
 
-#[bench]
-fn bench_fib_of_40000000(b: &mut Bencher) {
-    b.iter(|| {
-      let mut sum = 0;
-      fib(|i| -> bool {
-        if i > 4000000 {
-          // more or less a `break`
-          return false
-        }
 
-        if i % 2 != 0 {
-          // more or less `next`
-          return true
-        }
+#[cfg(test)]
+mod test {
+    extern crate test;
+    use self::test::Bencher;
 
-        sum += i;
+    use super::fib;
 
-        true
-      });
-    });
+    #[bench]
+    fn bench_fib_of_40000000(b: &mut Bencher) {
+        b.iter(|| {
+          let mut sum = 0;
+          fib(|i| -> bool {
+            if i > 4000000 {
+              // more or less a `break`
+              return false
+            }
+
+            if i % 2 != 0 {
+              // more or less `next`
+              return true
+            }
+
+            sum += i;
+
+            true
+          });
+        });
+    }
 }
